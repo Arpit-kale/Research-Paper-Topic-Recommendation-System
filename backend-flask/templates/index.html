@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Research Paper & Topic Recommendation System — Dashboard</title>
+<style>
+/* =====================================================================
+   Research Paper & Topic Recommendation System — Dashboard Stylesheet
+   ===================================================================== */
+
+:root {
+  --navy-900: #171b34;
+  --navy-800: #1e2350;
+  --navy-700: #262c63;
+  --ink: #1a1d2e;
+  --muted: #8b90a8;
+  --line: #eef0f6;
+  --card-bg: #ffffff;
+  --page-bg: #f4f5fa;
+
+  --blue: #4f6ef7;
+  --green: #10b981;
+  --purple: #8b5cf6;
+  --orange: #f59e0b;
+  --teal: #06b6d4;
+  --red: #ef4444;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 24px rgba(23, 27, 52, 0.06);
+  --sidebar-w: 248px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--page-bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font-family: inherit; cursor: pointer; }
+a { text-decoration: none; color: inherit; }
+
+/* ---------- App shell ---------- */
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  min-height: 100vh;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-700) 100%);
+  color: #fff;
+  padding: 26px 18px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 26px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--blue), var(--teal));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.brand-text .brand-title {
+  font-weight: 700;
+  font-size: 13.5px;
+  line-height: 1.25;
+  letter-spacing: 0.2px;
+}
+
+.brand-text .brand-subtitle {
+  font-size: 11px;
+  color: #8fa0e6;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.nav-group-label {
+  font-size: 11px;
+  color: #6b71a0;
+  padding: 14px 12px 8px;
+  font-weight: 600;
+}
+
+.nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #b7bbd9;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-item .nav-icon { width: 18px; text-align: center; font-size: 15px; }
+
+.nav-item:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(79, 110, 247, 0.35), rgba(79, 110, 247, 0.08));
+  color: #fff;
+  box-shadow: inset 3px 0 0 var(--blue);
+}
+
+.sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #7f86ad;
+  line-height: 1.6;
+}
+
+.sidebar-footer strong { color: #d7daf2; display: block; font-size: 13px; }
+
+/* ---------- Main column ---------- */
+.main { padding: 26px 32px 60px; max-width: 1400px; }
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.topbar h1 {
+  font-size: 20px;
+  margin: 0 0 4px;
+  letter-spacing: 0.2px;
+}
+
+.topbar .subtitle { color: var(--muted); font-size: 13.5px; }
+
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+.pill-select, .search-input {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: var(--radius-sm);
+  padding: 9px 14px;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Stat cards ---------- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.stat-card {
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  min-height: 108px;
+  box-shadow: var(--shadow);
+}
+
+.stat-card.c-blue   { background: linear-gradient(135deg, #4f6ef7, #3a54d6); }
+.stat-card.c-green  { background: linear-gradient(135deg, #14c893, #0ea472); }
+.stat-card.c-purple { background: linear-gradient(135deg, #a05cf0, #7b3fe0); }
+.stat-card.c-orange { background: linear-gradient(135deg, #ffb648, #f2932b); }
+.stat-card.c-teal   { background: linear-gradient(135deg, #22c7e0, #0c9fbd); }
+.stat-card.c-red    { background: linear-gradient(135deg, #ff6b6b, #e94848); }
+
+.stat-icon { font-size: 20px; opacity: 0.9; }
+.stat-value { font-size: 26px; font-weight: 700; margin: 10px 0 2px; }
+.stat-label { font-size: 12.5px; opacity: 0.92; }
+.stat-foot { font-size: 11px; margin-top: 8px; opacity: 0.85; }
+
+/* ---------- Card / panel ---------- */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.card-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.link-btn {
+  font-size: 12.5px;
+  color: var(--blue);
+  font-weight: 600;
+  background: none;
+  border: none;
+}
+
+/* ---------- Grid layout for overview ---------- */
+.grid-row {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.grid-row.cols-3 { grid-template-columns: 1.1fr 1.1fr 1fr; }
+.grid-row.cols-2 { grid-template-columns: 1.6fr 1fr; }
+
+@media (max-width: 1100px) {
+  .grid-row.cols-3, .grid-row.cols-2 { grid-template-columns: 1fr; }
+}
+
+/* ---------- Donut chart center label ---------- */
+.donut-wrap { position: relative; display: flex; justify-content: center; }
+.donut-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.donut-center .num { font-size: 22px; font-weight: 800; }
+.donut-center .lbl { font-size: 11px; color: var(--muted); }
+
+.legend { list-style: none; margin: 14px 0 0; padding: 0; }
+.legend li {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; padding: 5px 0; color: #4a4f6a;
+}
+.legend .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.legend .pct { margin-left: auto; font-weight: 700; color: var(--ink); }
+
+/* ---------- Ranked list (top themes) ---------- */
+.rank-list { list-style: none; margin: 0; padding: 0; }
+.rank-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--line);
+}
+.rank-item:last-child { border-bottom: none; }
+.rank-badge {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.rank-name { font-size: 13px; font-weight: 600; flex: 1; }
+.rank-count { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+
+/* ---------- Table ---------- */
+.table-wrap { overflow-x: auto; }
+table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th {
+  text-align: left; color: var(--muted); font-weight: 600;
+  font-size: 11.5px; padding: 10px 12px; border-bottom: 1px solid var(--line);
+}
+.data-table td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #fafbff; }
+
+.badge {
+  display: inline-block; padding: 4px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+}
+.badge.solved { background: #e4f9f0; color: #0ea472; }
+.badge.partially_solved { background: #fff4e0; color: #c67c14; }
+.badge.open { background: #ffe9e9; color: #e94848; }
+
+.row-actions button {
+  border: none; background: none; font-size: 14px; padding: 4px 6px; color: var(--muted);
+}
+.row-actions button:hover { color: var(--blue); }
+
+/* ---------- Quote / gap callout card ---------- */
+.quote-card {
+  background: linear-gradient(160deg, #262c63, #171b34);
+  color: #fff; border-radius: var(--radius-lg); padding: 20px;
+  box-shadow: var(--shadow);
+}
+.quote-card .quote-icon { font-size: 22px; margin-bottom: 8px; }
+.quote-card p { font-size: 13px; line-height: 1.6; color: #d3d6ef; margin: 0 0 12px; }
+.quote-card .stars { color: #ffc94d; letter-spacing: 2px; font-size: 13px; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  border: none; border-radius: var(--radius-sm); padding: 10px 16px;
+  font-size: 13px; font-weight: 600;
+}
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary:hover { background: #3a54d6; }
+.btn-ghost { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+.btn-danger { background: #fdecec; color: #e94848; }
+
+.toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+.toolbar .spacer { flex: 1; }
+
+/* ---------- Theme chip / card grid ---------- */
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.theme-card {
+  background: #fff; border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow);
+  border-top: none;
+}
+.theme-card .theme-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.theme-icon-badge {
+  width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center;
+  justify-content: center; font-size: 16px; color: #fff; flex-shrink: 0;
+}
+.theme-card h4 { margin: 0; font-size: 13.5px; }
+.theme-card p { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin: 0 0 10px; }
+.theme-card .theme-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.theme-card .theme-count { font-weight: 700; }
+
+/* ---------- Finding columns ---------- */
+.finding-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 900px) { .finding-cols { grid-template-columns: 1fr; } }
+.finding-list { list-style: none; margin: 0; padding: 0; }
+.finding-item {
+  display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); align-items: flex-start;
+}
+.finding-item:last-child { border-bottom: none; }
+.finding-mark { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; margin-top: 1px; }
+.finding-text { font-size: 13px; line-height: 1.5; flex: 1; }
+.finding-item .row-actions { display: flex; gap: 2px; }
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(23, 27, 52, 0.5);
+  display: flex; align-items: center; justify-content: center; z-index: 50;
+}
+.modal { background: #fff; border-radius: var(--radius-lg); width: 480px; max-width: 92vw; padding: 22px; max-height: 88vh; overflow-y: auto; }
+.modal h3 { margin: 0 0 16px; font-size: 16px; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; color: #4a4f6a; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 13px; font-family: inherit;
+}
+.form-group textarea { resize: vertical; min-height: 70px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.hidden { display: none !important; }
+
+/* ---------- Toast ---------- */
+#toast {
+  position: fixed; bottom: 24px; right: 24px; background: var(--navy-900); color: #fff;
+  padding: 12px 18px; border-radius: var(--radius-sm); font-size: 13px; box-shadow: var(--shadow);
+  z-index: 100; opacity: 0; transform: translateY(8px); transition: all 0.2s ease; pointer-events: none;
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+#toast.error { background: #b03434; }
+
+/* ---------- Empty / loading ---------- */
+.empty-state { text-align: center; color: var(--muted); font-size: 13px; padding: 30px 0; }
+.skeleton { background: linear-gradient(90deg, #eef0f6 25%, #f7f8fb 37%, #eef0f6 63%); background-size: 400% 100%; animation: shimmer 1.4s ease infinite; border-radius: 8px; }
+@keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+.section { display: none; }
+.section.active { display: block; }
+
+.gap-block { margin-bottom: 14px; }
+.gap-block h4 { font-size: 12.5px; text-transform: none; color: var(--muted); margin: 0 0 6px; font-weight: 700; }
+.gap-block p { font-size: 13.5px; line-height: 1.7; margin: 0; }
+
+@media (max-width: 860px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .main { padding: 20px; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">🎓</div>
+      <div class="brand-text">
+        <div class="brand-title">RESEARCH RECOMMENDER</div>
+        <div class="brand-subtitle">LITERATURE DASHBOARD</div>
+      </div>
+    </div>
+
+    <ul class="nav">
+      <li class="nav-item active" data-section="overview"><span class="nav-icon">🏠</span>Overview</li>
+      <li class="nav-item" data-section="papers"><span class="nav-icon">📄</span>Research Papers</li>
+      <li class="nav-item" data-section="discover"><span class="nav-icon">🌐</span>Discover Papers</li>
+      <li class="nav-item" data-section="readinglist"><span class="nav-icon">🔖</span>Reading List</li>
+      <li class="nav-item" data-section="themes"><span class="nav-icon">🧩</span>Themes</li>
+      <li class="nav-item" data-section="findings"><span class="nav-icon">🔍</span>Key Findings</li>
+      <li class="nav-item" data-section="gap"><span class="nav-icon">🎯</span>Research Gap</li>
+      <li class="nav-item" data-section="future"><span class="nav-icon">🚀</span>Future Work</li>
+      <li class="nav-item" data-section="reports"><span class="nav-icon">🖨️</span>Reports</li>
+      <li class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span>Settings</li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <strong>Arpit Kale</strong>
+      CSE-AIML / A · Roll A-31<br>
+      Subject: Recommendation System
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">Overview</h1>
+        <div class="subtitle" id="pageSubtitle">Literature review at a glance</div>
+      </div>
+      <div class="topbar-actions">
+        <select class="pill-select"><option>Review Period: 2018-2025</option></select>
+        <button class="icon-btn" title="Print" onclick="window.print()">🖨️</button>
+      </div>
+    </div>
+
+    <section id="section-overview" class="section active"></section>
+    <section id="section-papers" class="section"></section>
+    <section id="section-discover" class="section"></section>
+    <section id="section-readinglist" class="section"></section>
+    <section id="section-themes" class="section"></section>
+    <section id="section-findings" class="section"></section>
+    <section id="section-gap" class="section"></section>
+    <section id="section-future" class="section"></section>
+    <section id="section-reports" class="section"></section>
+    <section id="section-settings" class="section"></section>
+  </main>
+
+</div>
+
+<div id="modalOverlay" class="modal-overlay hidden"></div>
+<div id="toast"></div>
+
+<script>
+(function () {
+  function svgEl(name, attrs = {}) {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+  }
+
+  if (!window.Chart) {
+    class ChartFallback {
+      constructor(canvas, config) {
+        this.canvas = canvas;
+        this.config = config;
+        this.svg = null;
+        this._render();
+      }
+
+      _render() {
+        const canvas = this.canvas;
+        const parent = canvas.parentElement;
+        if (!parent) return;
+
+        if (this.svg) this.svg.remove();
+        this.svg = svgEl('svg', {
+          width: canvas.width || 640,
+          height: canvas.height || 220,
+          viewBox: `0 0 ${canvas.width || 640} ${canvas.height || 220}`,
+          style: 'display:block;width:100%;height:100%;'
+        });
+
+        if (this.config.type === 'doughnut') {
+          const { labels = [], datasets = [] } = this.config.data;
+          const values = datasets[0]?.data || [];
+          const colors = datasets[0]?.backgroundColor || [];
+          const total = values.reduce((sum, v) => sum + (Number(v) || 0), 0) || 1;
+          const cx = (canvas.width || 640) / 2;
+          const cy = (canvas.height || 220) / 2;
+          const r = 74;
+          let start = -Math.PI / 2;
+
+          values.forEach((value, i) => {
+            const slice = ((Number(value) || 0) / total) * Math.PI * 2;
+            const end = start + slice;
+            const x1 = cx + r * Math.cos(start);
+            const y1 = cy + r * Math.sin(start);
+            const x2 = cx + r * Math.cos(end);
+            const y2 = cy + r * Math.sin(end);
+            const largeArc = slice > Math.PI ? 1 : 0;
+            const path = svgEl('path', {
+              d: `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`,
+              fill: colors[i] || '#4f6ef7',
+              opacity: 0.95
+            });
+            this.svg.appendChild(path);
+            start = end;
+          });
+
+          const inner = svgEl('circle', { cx, cy, r: 42, fill: '#ffffff' });
+          this.svg.appendChild(inner);
+          const centerLabel = svgEl('text', { x: cx, y: cy + 5, 'text-anchor': 'middle', 'font-size': '26', fill: '#1a1d2e', 'font-family': 'sans-serif', 'font-weight': '700' });
+          centerLabel.textContent = String(total);
+          this.svg.appendChild(centerLabel);
+        } else if (this.config.type === 'bar') {
+          const { labels = [], datasets = [] } = this.config.data;
+          const values = datasets[0]?.data || [];
+          const colors = datasets[0]?.backgroundColor || [];
+          const width = canvas.width || 640;
+          const height = canvas.height || 220;
+          const padding = 28;
+          const max = Math.max(...values, 1);
+          const barWidth = Math.max(18, (width - padding * 2) / Math.max(values.length, 1) * 0.6);
+          values.forEach((value, i) => {
+            const x = padding + i * ((width - padding * 2) / Math.max(values.length, 1)) + 8;
+            const barHeight = (Number(value) / max) * (height - 52);
+            const y = height - padding - barHeight;
+            const rect = svgEl('rect', {
+              x, y, width: barWidth, height: barHeight, rx: 6, fill: colors[i] || '#4f6ef7'
+            });
+            this.svg.appendChild(rect);
+          });
+        } else if (this.config.type === 'line') {
+          const { labels = [], datasets = [] } = this.config.data;
+          const values = datasets[0]?.data || [];
+          const width = canvas.width || 640;
+          const height = canvas.height || 220;
+          const padding = 30;
+          const max = Math.max(...values, 1);
+          const min = 0;
+          const getX = (index) => padding + (index * (width - padding * 2)) / Math.max(values.length - 1, 1);
+          const getY = (value) => height - padding - (((Number(value) - min) / (max - min || 1)) * (height - padding * 2));
+          const points = values.map((v, i) => `${getX(i)},${getY(v)}`).join(' L ');
+          const area = `M ${getX(0)},${height - padding} L ${points} L ${getX(values.length - 1)},${height - padding} Z`;
+          const areaPath = svgEl('path', { d: area, fill: 'rgba(79,110,247,0.12)' });
+          const linePath = svgEl('path', { d: `M ${points}`, fill: 'none', stroke: '#4f6ef7', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' });
+          const dots = values.map((v, i) => {
+            const dot = svgEl('circle', { cx: getX(i), cy: getY(v), r: 4, fill: '#4f6ef7' });
+            return dot;
+          });
+          this.svg.append(areaPath, linePath, ...dots);
+        }
+
+        canvas.style.display = 'none';
+        canvas.insertAdjacentElement('afterend', this.svg);
+      }
+
+      destroy() {
+        if (this.svg) this.svg.remove();
+        if (this.canvas) this.canvas.style.display = 'block';
+      }
+    }
+
+    window.Chart = ChartFallback;
+  }
+})();
+</script>
+<script>
+// ===== config.js =====
+// The Flask API runs separately (python app.py) at this address by default.
+// If you changed the host/port in backend-flask/app.py, update this to match.
+const API_BASE_URL = "/api";
+
+</script>
+<script>
+// ===== api.js =====
+/**
+ * Thin fetch wrapper around the Flask API (backend-flask/app.py).
+ * Every function returns a parsed JSON body or throws an Error with a
+ * readable message.
+ */
+const Api = (() => {
+  async function request(path, options = {}) {
+    let res;
+    try {
+      res = await fetch(`${API_BASE_URL}${path}`, {
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        ...options,
+      });
+    } catch (networkErr) {
+      throw new Error(
+        `Can't reach the Flask API at ${API_BASE_URL}. Is "python app.py" running?`
+      );
+    }
+
+    let body = null;
+    try {
+      body = await res.json();
+    } catch (e) {
+      // no JSON body
+    }
+
+    if (!res.ok) {
+      throw new Error((body && body.message) || `Request failed (${res.status})`);
+    }
+
+    return body;
+  }
+
+  const get = (path) => request(path, { method: "GET" });
+  const post = (path, data) => request(path, { method: "POST", body: JSON.stringify(data) });
+  const put = (path, data) => request(path, { method: "PUT", body: JSON.stringify(data) });
+  const del = (path) => request(path, { method: "DELETE" });
+
+  return {
+    // Dashboard
+    getSummary: () => get("/dashboard/summary"),
+
+    // Themes
+    getThemes: () => get("/themes"),
+    getTheme: (id) => get(`/themes/${id}`),
+    createTheme: (data) => post("/themes", data),
+    updateTheme: (id, data) => put(`/themes/${id}`, data),
+    deleteTheme: (id) => del(`/themes/${id}`),
+
+    // Papers
+    getPapers: (params = "") => get(`/papers${params}`),
+    createPaper: (data) => post("/papers", data),
+    updatePaper: (id, data) => put(`/papers/${id}`, data),
+    deletePaper: (id) => del(`/papers/${id}`),
+
+    // Live external search (real papers, fetched server-side from Semantic Scholar / CrossRef)
+    searchLive: (query, limit = 8) => get(`/search/live?q=${encodeURIComponent(query)}&limit=${limit}`),
+
+    // Live citation refresh (pulls real current citation counts into local papers)
+    refreshPaperCitations: (id) => post(`/papers/${id}/refresh-citations`, {}),
+    refreshAllCitations: () => post("/papers/refresh-citations", {}),
+
+    // Topic trend chart (OpenAlex publications-per-year for a topic)
+    getTopicTrend: (query) => get(`/topic-trend?q=${encodeURIComponent(query)}`),
+
+    // Reading list (bookmarks with tags, notes, read/unread — from Discover Papers)
+    getReadingList: (params = "") => get(`/reading-list${params}`),
+    addToReadingList: (data) => post("/reading-list", data),
+    updateReadingListItem: (id, data) => put(`/reading-list/${id}`, data),
+    removeFromReadingList: (id) => del(`/reading-list/${id}`),
+
+    // Research tools (deterministic, template-based — no external AI needed)
+    generatePaperSummary: (payload) => post("/tools/paper-summary", payload),
+    generateResearchGapDraft: () => get("/tools/research-gap"),
+    generateLiteratureParagraph: (themeId) => get(`/tools/literature-paragraph?theme_id=${themeId}`),
+
+    // Key findings
+    getFindings: (params = "") => get(`/key-findings${params}`),
+    createFinding: (data) => post("/key-findings", data),
+    updateFinding: (id, data) => put(`/key-findings/${id}`, data),
+    deleteFinding: (id) => del(`/key-findings/${id}`),
+
+    // Future work
+    getFutureWork: () => get("/future-work"),
+    createFutureWork: (data) => post("/future-work", data),
+    updateFutureWork: (id, data) => put(`/future-work/${id}`, data),
+    deleteFutureWork: (id) => del(`/future-work/${id}`),
+
+    // Research gap
+    getResearchGap: () => get("/research-gap"),
+    updateResearchGap: (data) => put("/research-gap", data),
+
+    // Report meta / Settings
+    getReportMeta: () => get("/report-meta"),
+    updateReportMeta: (data) => put("/report-meta", data),
+  };
+})();
+
+</script>
+<script>
+// ===== charts.js =====
+/**
+ * Chart.js rendering helpers. Chart.js is loaded from cdnjs in index.html.
+ */
+const Charts = (() => {
+  let themeDonut = null;
+  let themeBar = null;
+
+  function renderThemeDonut(canvasId, themeDistribution, totalPapers) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return;
+
+    const labels = themeDistribution.map((t) => t.name);
+    const data = themeDistribution.map((t) => t.count);
+    const colors = themeDistribution.map((t) => t.color);
+
+    if (themeDonut) themeDonut.destroy();
+    themeDonut = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels,
+        datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }],
+      },
+      options: {
+        cutout: "72%",
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (item) => {
+                const pct = totalPapers ? ((item.raw / totalPapers) * 100).toFixed(1) : 0;
+                return ` ${item.label}: ${item.raw} papers (${pct}%)`;
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  function renderThemeBar(canvasId, themeDistribution) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return;
+
+    const labels = themeDistribution.map((t) => "Theme " + t.id);
+    const data = themeDistribution.map((t) => t.count);
+    const colors = themeDistribution.map((t) => t.color);
+
+    if (themeBar) themeBar.destroy();
+    themeBar = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{ data, backgroundColor: colors, borderRadius: 6, maxBarThickness: 34 }],
+      },
+      options: {
+        plugins: { legend: { display: false }, tooltip: { enabled: true } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: "#eef0f6" } },
+          x: { grid: { display: false } },
+        },
+      },
+    });
+  }
+
+  let yearTrend = null;
+  function renderYearTrend(canvasId, papersByYear) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return;
+
+    const labels = papersByYear.map((y) => y.year);
+    const data = papersByYear.map((y) => y.count);
+
+    if (yearTrend) yearTrend.destroy();
+    yearTrend = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          data,
+          borderColor: "#4f6ef7",
+          backgroundColor: "rgba(79,110,247,0.12)",
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: "#4f6ef7",
+          pointRadius: 4,
+        }],
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: "#eef0f6" } },
+          x: { grid: { display: false } },
+        },
+      },
+    });
+  }
+
+  return { renderThemeDonut, renderThemeBar, renderYearTrend };
+})();
+
+</script>
+<script>
+// ===== app.js =====
+/**
+ * Research Paper & Topic Recommendation System — Dashboard
+ * Vanilla JS single-page app. No build step required.
+ */
+
+const state = {
+  themes: [],
+  summary: null,
+};
+
+/* ---------------------------------------------------------------------
+ * Small utilities
+ * ------------------------------------------------------------------- */
+function escapeHtml(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function toast(message, isError = false) {
+  const el = document.getElementById("toast");
+  el.textContent = message;
+  el.classList.toggle("error", isError);
+  el.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove("show"), 3200);
+}
+
+function statusBadge(status) {
+  const labels = { solved: "Solved", partially_solved: "Partially Solved", open: "Open" };
+  return `<span class="badge ${status}">${labels[status] || status}</span>`;
+}
+
+function openModal(html) {
+  const overlay = document.getElementById("modalOverlay");
+  overlay.innerHTML = `<div class="modal">${html}</div>`;
+  overlay.classList.remove("hidden");
+  overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.add("hidden");
+}
+
+/* ---------------------------------------------------------------------
+ * Research tools: shared "view generated text + export" modal.
+ * Export is 100% client-side (a Blob download) — no server round-trip,
+ * so it always works even if the generation itself came from local data.
+ * ------------------------------------------------------------------- */
+function renderMiniMarkdown(text) {
+  return escapeHtml(text)
+    .replace(/### (.+)/g, "<h4 style='margin:0 0 10px'>$1</h4>")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\n/g, "<br>");
+}
+
+function downloadText(filename, content) {
+  const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function showToolResult(title, content) {
+  const filename = title.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") + ".md";
+  openModal(`
+    <h3>${escapeHtml(title)}</h3>
+    <div style="font-size:13.5px; line-height:1.7; max-height:50vh; overflow-y:auto; margin-bottom:18px; color:#333">
+      ${renderMiniMarkdown(content)}
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="toolExportBtn">⬇️ Export as .md</button>
+      <button type="button" class="btn btn-primary" onclick="closeModal()">Close</button>
+    </div>
+  `);
+  document.getElementById("toolExportBtn").addEventListener("click", () => downloadText(filename, content));
+}
+
+async function withThemeOptions(selectedId) {
+  if (!state.themes.length) {
+    const res = await Api.getThemes();
+    state.themes = res.data;
+  }
+  return state.themes
+    .map((t) => `<option value="${t.id}" ${t.id === selectedId ? "selected" : ""}>${escapeHtml(t.name)}</option>`)
+    .join("");
+}
+
+/* ---------------------------------------------------------------------
+ * Navigation
+ * ------------------------------------------------------------------- */
+const sections = {
+  overview: { title: "Overview", subtitle: "Literature review at a glance", load: loadOverview },
+  papers: { title: "Research Papers", subtitle: "The 15 papers reviewed for this report", load: loadPapers },
+  discover: { title: "Discover Papers", subtitle: "Live search across real scholarly databases (Semantic Scholar → CrossRef → OpenAlex)", load: loadDiscover },
+  readinglist: { title: "Reading List", subtitle: "Papers you've bookmarked from Discover, with tags, notes, and read/unread status", load: loadReadingList },
+  themes: { title: "Research Themes", subtitle: "Six thematic clusters from the literature review", load: loadThemes },
+  findings: { title: "Key Findings", subtitle: "What works well, and what remains open", load: loadFindings },
+  gap: { title: "Research Gap", subtitle: "Conclusion and direction for future work", load: loadGap },
+  future: { title: "Future Work", subtitle: "Recommended next steps for the field", load: loadFutureWork },
+  reports: { title: "Reports", subtitle: "Printable summary of the full literature review", load: loadReport },
+  settings: { title: "Settings", subtitle: "Report and author details", load: loadSettings },
+};
+
+function goTo(sectionKey) {
+  document.querySelectorAll(".nav-item").forEach((el) => {
+    el.classList.toggle("active", el.dataset.section === sectionKey);
+  });
+  document.querySelectorAll(".section").forEach((el) => {
+    el.classList.toggle("active", el.id === `section-${sectionKey}`);
+  });
+  const meta = sections[sectionKey];
+  document.getElementById("pageTitle").textContent = meta.title;
+  document.getElementById("pageSubtitle").textContent = meta.subtitle;
+  meta.load();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".nav-item").forEach((el) => {
+    el.addEventListener("click", () => goTo(el.dataset.section));
+  });
+  document.getElementById("modalOverlay").addEventListener("click", (e) => {
+    if (e.target.id === "modalOverlay") closeModal();
+  });
+  goTo("overview");
+});
+
+/* ---------------------------------------------------------------------
+ * Overview
+ * ------------------------------------------------------------------- */
+async function loadOverview() {
+  const root = document.getElementById("section-overview");
+  root.innerHTML = `<div class="empty-state">Loading dashboard…</div>`;
+
+  try {
+    const res = await Api.getSummary();
+    state.summary = res;
+    renderOverview(res);
+  } catch (err) {
+    root.innerHTML = `<div class="empty-state">Couldn't load the dashboard: ${escapeHtml(err.message)}<br><br>
+      Make sure the Flask server is running (<code>python app.py</code>) and reachable at
+      <code>${API_BASE_URL}</code>.</div>`;
+  }
+}
+
+function renderOverview(res) {
+  const { stats, theme_distribution, top_themes, papers_by_year, literature_table, research_gap, meta } = res;
+  const rankColors = ["#4f6ef7", "#10b981", "#8b5cf6", "#f59e0b", "#06b6d4"];
+
+  const root = document.getElementById("section-overview");
+  root.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-card c-blue">
+        <div class="stat-icon">📄</div>
+        <div class="stat-value">${stats.total_papers}</div>
+        <div class="stat-label">Papers Reviewed</div>
+      </div>
+      <div class="stat-card c-green">
+        <div class="stat-icon">📅</div>
+        <div class="stat-value">${stats.publication_span}</div>
+        <div class="stat-label">Publication Span</div>
+      </div>
+      <div class="stat-card c-purple">
+        <div class="stat-icon">🧩</div>
+        <div class="stat-value">${stats.total_themes}</div>
+        <div class="stat-label">Research Themes</div>
+      </div>
+      <div class="stat-card c-teal">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">${stats.works_well_count}</div>
+        <div class="stat-label">What Works Well</div>
+      </div>
+      <div class="stat-card c-red">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-value">${stats.open_challenge_count}</div>
+        <div class="stat-label">Open Challenges</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Publications by Year</div>
+          <div class="card-subtitle">How many reviewed papers came out each year${stats.citations_checked ? ` · ${stats.citations_checked} papers have a live citation count (see Research Papers)` : ""}</div>
+        </div>
+      </div>
+      <canvas id="yearTrend" height="70"></canvas>
+    </div>
+
+    <div class="grid-row cols-3">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Papers by Theme</div>
+            <div class="card-subtitle">Distribution across ${theme_distribution.length} themes</div>
+          </div>
+        </div>
+        <div class="donut-wrap">
+          <canvas id="themeDonut" height="220"></canvas>
+          <div class="donut-center">
+            <div class="num">${stats.total_papers}</div>
+            <div class="lbl">TOTAL</div>
+          </div>
+        </div>
+        <ul class="legend">
+          ${theme_distribution.map((t) => `
+            <li><span class="dot" style="background:${t.color}"></span>${escapeHtml(t.name)}
+              <span class="pct">${t.percent}%</span></li>`).join("")}
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Papers per Theme</div>
+            <div class="card-subtitle">Count of reviewed papers</div>
+          </div>
+        </div>
+        <canvas id="themeBar" height="230"></canvas>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Top Themes by Volume</div>
+        </div>
+        <ul class="rank-list">
+          ${top_themes.map((t, i) => `
+            <li class="rank-item">
+              <span class="rank-badge" style="background:${rankColors[i] || "#8b90a8"}">${i + 1}</span>
+              <span class="rank-name">${escapeHtml(t.name)}</span>
+              <span class="rank-count">${t.count} papers</span>
+            </li>`).join("")}
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-row cols-2">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Literature Review Overview</div>
+            <div class="card-subtitle">Papers reviewed and resolution status, by theme</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Theme</th><th>Papers</th><th>Most Recent Reference</th><th>Solved</th><th>Open</th></tr>
+            </thead>
+            <tbody>
+              ${literature_table.map((row) => `
+                <tr>
+                  <td><strong>${escapeHtml(row.theme)}</strong></td>
+                  <td>${row.papers_reviewed}</td>
+                  <td>${escapeHtml(row.key_reference || "—")}</td>
+                  <td>${row.solved}</td>
+                  <td>${row.open}</td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote-icon">🎓</div>
+        <p>${escapeHtml(research_gap ? research_gap.closing_statement : "")}</p>
+        <div class="stars">★★★★★</div>
+      </div>
+    </div>
+  `;
+
+  Charts.renderThemeDonut("themeDonut", theme_distribution, stats.total_papers);
+  Charts.renderThemeBar("themeBar", theme_distribution);
+  Charts.renderYearTrend("yearTrend", papers_by_year || []);
+}
+
+/* ---------------------------------------------------------------------
+ * Papers (full CRUD)
+ * ------------------------------------------------------------------- */
+async function loadPapers() {
+  const root = document.getElementById("section-papers");
+  root.innerHTML = `
+    <div class="toolbar">
+      <input type="text" id="paperSearch" class="search-input" placeholder="Search papers…" style="min-width:220px" />
+      <select id="paperThemeFilter" class="pill-select"><option value="">All themes</option></select>
+      <select id="paperStatusFilter" class="pill-select">
+        <option value="">All statuses</option>
+        <option value="solved">Solved</option>
+        <option value="partially_solved">Partially Solved</option>
+        <option value="open">Open</option>
+      </select>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost" id="refreshCitationsBtn" title="Pull real, current citation counts for every paper from Semantic Scholar / CrossRef">🔄 Refresh Citations</button>
+      <button class="btn btn-primary" id="addPaperBtn">+ Add Paper</button>
+    </div>
+    <div class="card"><div class="table-wrap"><table class="data-table">
+      <thead><tr><th>Title</th><th>Theme</th><th>Authors / Venue</th><th>Year</th><th>Citations</th><th>Status</th><th></th></tr></thead>
+      <tbody id="papersTbody"><tr><td colspan="7" class="empty-state">Loading…</td></tr></tbody>
+    </table></div></div>
+  `;
+
+  const themeOptionsHtml = await withThemeOptions();
+  document.getElementById("paperThemeFilter").innerHTML += themeOptionsHtml.replace(/selected/g, "");
+
+  document.getElementById("addPaperBtn").addEventListener("click", () => openPaperForm());
+  document.getElementById("paperSearch").addEventListener("input", debounce(fetchAndRenderPapers, 300));
+  document.getElementById("paperThemeFilter").addEventListener("change", fetchAndRenderPapers);
+  document.getElementById("paperStatusFilter").addEventListener("change", fetchAndRenderPapers);
+  document.getElementById("refreshCitationsBtn").addEventListener("click", refreshAllCitations);
+
+  fetchAndRenderPapers();
+}
+
+function debounce(fn, ms) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+async function refreshAllCitations() {
+  const btn = document.getElementById("refreshCitationsBtn");
+  btn.disabled = true;
+  btn.textContent = "🔄 Refreshing… (this can take ~10-30s for 15 papers)";
+  try {
+    const res = await Api.refreshAllCitations();
+    toast(res.message);
+    fetchAndRenderPapers();
+  } catch (err) {
+    toast(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "🔄 Refresh Citations";
+  }
+}
+
+async function refreshOneCitation(id) {
+  try {
+    const res = await Api.refreshPaperCitations(id);
+    toast(res.message);
+    fetchAndRenderPapers();
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+async function fetchAndRenderPapers() {
+  const search = document.getElementById("paperSearch").value.trim();
+  const themeId = document.getElementById("paperThemeFilter").value;
+  const status = document.getElementById("paperStatusFilter").value;
+
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  if (themeId) params.set("theme_id", themeId);
+  if (status) params.set("status", status);
+  params.set("per_page", "50");
+
+  const tbody = document.getElementById("papersTbody");
+  tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Loading…</td></tr>`;
+
+  try {
+    const res = await Api.getPapers(`?${params.toString()}`);
+    const papers = res.data || [];
+    if (!papers.length) {
+      tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No papers match these filters.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = papers.map((p) => `
+      <tr>
+        <td><strong>${escapeHtml(p.title)}</strong><br><span style="color:#8b90a8;font-size:12px">${escapeHtml((p.contribution || "").slice(0, 90))}${(p.contribution || "").length > 90 ? "…" : ""}</span></td>
+        <td>${escapeHtml(p.theme ? p.theme.name : "—")}</td>
+        <td>${escapeHtml(p.authors_venue)}</td>
+        <td>${p.year}</td>
+        <td>
+          ${p.citation_count !== null && p.citation_count !== undefined
+            ? `<strong>${p.citation_count}</strong> <span title="Last checked ${escapeHtml(p.citations_updated_at || "")}" style="color:#8b90a8;cursor:help">ⓘ</span>`
+            : `<button class="link-btn" onclick="refreshOneCitation(${p.id})" title="Fetch a live citation count">🔄 check</button>`}
+        </td>
+        <td>${statusBadge(p.status)}</td>
+        <td class="row-actions">
+          <button title="One-click summary" onclick="showPaperSummary(${p.id})">📝</button>
+          <button title="Edit" onclick='openPaperForm(${JSON.stringify(p).replace(/'/g, "&#39;")})'>✏️</button>
+          <button title="Delete" onclick="deletePaper(${p.id}, '${escapeHtml(p.title).replace(/'/g, "&#39;")}')">🗑️</button>
+        </td>
+      </tr>`).join("");
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-state">${escapeHtml(err.message)}</td></tr>`;
+  }
+}
+
+async function openPaperForm(paper = null, prefill = null) {
+  const f = paper || prefill || {};
+  const themeOptionsHtml = await withThemeOptions(paper ? paper.theme_id : null);
+  openModal(`
+    <h3>${paper ? "Edit Paper" : "Add Paper"}</h3>
+    <form id="paperForm">
+      <div class="form-group"><label>Title</label>
+        <input name="title" required value="${escapeHtml(f.title)}"></div>
+      <div class="form-group"><label>Theme</label>
+        <select name="theme_id" required>${themeOptionsHtml}</select></div>
+      <div class="form-group"><label>Authors / Venue</label>
+        <input name="authors_venue" required value="${escapeHtml(f.authors_venue)}"></div>
+      <div class="form-group"><label>Year</label>
+        <input name="year" type="number" min="1990" max="2030" required value="${f.year || 2025}"></div>
+      <div class="form-group"><label>Contribution</label>
+        <textarea name="contribution" required placeholder="Summarize this paper's contribution in your own words">${escapeHtml(f.contribution)}</textarea></div>
+      <div class="form-group"><label>Status</label>
+        <select name="status">
+          <option value="solved" ${f.status === "solved" ? "selected" : ""}>Solved</option>
+          <option value="partially_solved" ${!f.status || f.status === "partially_solved" ? "selected" : ""}>Partially Solved</option>
+          <option value="open" ${f.status === "open" ? "selected" : ""}>Open</option>
+        </select></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">${paper ? "Save Changes" : "Add Paper"}</button>
+      </div>
+    </form>
+  `);
+
+  document.getElementById("paperForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    try {
+      if (paper) {
+        await Api.updatePaper(paper.id, data);
+        toast("Paper updated");
+      } else {
+        await Api.createPaper(data);
+        toast("Paper added");
+      }
+      closeModal();
+      fetchAndRenderPapers();
+    } catch (err) {
+      toast(err.message, true);
+    }
+  });
+}
+
+async function deletePaper(id, title) {
+  if (!confirm(`Delete "${title}"? This can't be undone.`)) return;
+  try {
+    await Api.deletePaper(id);
+    toast("Paper deleted");
+    fetchAndRenderPapers();
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+async function showPaperSummary(paperId) {
+  try {
+    const res = await Api.generatePaperSummary({ paper_id: paperId });
+    showToolResult("Paper Summary", res.content);
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Discover Papers — live search against CrossRef's real, public database
+ * (fetched server-side by Flask; see /api/search/live in app.py)
+ * ------------------------------------------------------------------- */
+function loadDiscover() {
+  const root = document.getElementById("section-discover");
+  root.innerHTML = `
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">
+        <div>
+          <div class="card-title">🌐 Search real scholarly papers</div>
+          <div class="card-subtitle">Live results — Semantic Scholar first, falling back to CrossRef, then OpenAlex — type at least 3 characters</div>
+        </div>
+      </div>
+      <input type="text" id="discoverSearch" class="search-input" style="width:100%"
+        placeholder="e.g. graph neural network recommendation, citation-based cold start…" />
+    </div>
+    <div id="trendChartCard"></div>
+    <div id="discoverResults"></div>
+  `;
+  document.getElementById("discoverSearch").addEventListener("input", debounce(runDiscoverSearch, 500));
+  document.getElementById("discoverSearch").focus();
+}
+
+async function runDiscoverSearch() {
+  const query = document.getElementById("discoverSearch").value.trim();
+  const resultsEl = document.getElementById("discoverResults");
+  const trendEl = document.getElementById("trendChartCard");
+
+  if (!query) {
+    resultsEl.innerHTML = "";
+    trendEl.innerHTML = "";
+    return;
+  }
+  if (query.length < 3) {
+    resultsEl.innerHTML = `<div class="empty-state">Keep typing (min 3 characters)…</div>`;
+    trendEl.innerHTML = "";
+    return;
+  }
+
+  resultsEl.innerHTML = `<div class="empty-state">Searching live sources (Semantic Scholar → CrossRef → OpenAlex)…</div>`;
+  runTopicTrend(query); // fires in parallel, renders independently when it resolves
+
+  try {
+    const res = await Api.searchLive(query, 8);
+    const papers = res.data || [];
+    if (!papers.length) {
+      resultsEl.innerHTML = `<div class="empty-state">${escapeHtml(res.message || "No results found.")}</div>`;
+      return;
+    }
+    const sourceNote = res.source
+      ? `<div style="font-size:11.5px; color:var(--muted); margin-bottom:10px">Source: ${escapeHtml(res.source)}</div>`
+      : "";
+    resultsEl.innerHTML = sourceNote + papers.map((p, i) => `
+      <div class="card" style="margin-bottom:12px">
+        <div style="display:flex; justify-content:space-between; gap:16px; align-items:flex-start">
+          <div style="flex:1">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px">
+              <span style="font-weight:700; font-size:14px">${escapeHtml(p.title)}</span>
+              ${p.source ? `<span style="font-size:10px; font-weight:700; color:#8b90a8; border:1px solid var(--line); border-radius:999px; padding:1px 8px; flex-shrink:0">${escapeHtml(p.source)}</span>` : ""}
+            </div>
+            <div style="font-size:12.5px; color:var(--muted); margin-bottom:6px">
+              ${escapeHtml(p.authors)}${p.year ? " · " + p.year : ""}${p.venue ? " · " + escapeHtml(p.venue) : ""}
+            </div>
+            ${p.abstract ? `<div style="font-size:12.5px; color:#4a4f6a; line-height:1.5; margin-bottom:6px">${escapeHtml(p.abstract)}</div>` : ""}
+            <div style="font-size:12px; color:var(--muted)">
+              ${p.citation_count ? `📈 ${p.citation_count} citations` : ""}
+              ${p.url ? ` · <a href="${escapeHtml(p.url)}" target="_blank" rel="noopener" style="color:var(--blue)">View paper →</a>` : (p.doi ? ` · <a href="https://doi.org/${escapeHtml(p.doi)}" target="_blank" rel="noopener" style="color:var(--blue)">View paper →</a>` : "")}
+              ${p.pdf_url ? ` · <a href="${escapeHtml(p.pdf_url)}" target="_blank" rel="noopener" style="color:var(--green)">📄 Open-access PDF</a>` : ""}
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0">
+            <button class="btn btn-primary" onclick='importDiscoveredPaper(${JSON.stringify(p).replace(/'/g, "&#39;")})'>+ Add to Review</button>
+            <button class="btn btn-ghost" onclick='bookmarkDiscoveredPaper(${JSON.stringify(p).replace(/'/g, "&#39;")}, this)'>🔖 Bookmark</button>
+            <button class="btn btn-ghost" onclick='showDiscoveredSummary(${JSON.stringify(p).replace(/'/g, "&#39;")})'>📝 Summary</button>
+          </div>
+        </div>
+      </div>`).join("");
+  } catch (err) {
+    resultsEl.innerHTML = `<div class="empty-state">${escapeHtml(err.message)}</div>`;
+  }
+}
+
+async function runTopicTrend(query) {
+  const trendEl = document.getElementById("trendChartCard");
+  try {
+    const res = await Api.getTopicTrend(query);
+    const data = res.data || [];
+    if (!data.length) {
+      trendEl.innerHTML = ""; // stay quiet — the main search result already explains why, if it failed
+      return;
+    }
+    trendEl.innerHTML = `
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div>
+            <div class="card-title">📈 Publication Trend: "${escapeHtml(query)}"</div>
+            <div class="card-subtitle">Papers published per year on this topic, last 15 years (via OpenAlex)</div>
+          </div>
+        </div>
+        <canvas id="topicTrendChart" height="70"></canvas>
+      </div>`;
+    Charts.renderYearTrend("topicTrendChart", data);
+  } catch (err) {
+    trendEl.innerHTML = ""; // non-critical — don't block the main search results over this
+  }
+}
+
+function importDiscoveredPaper(discovered) {
+  openPaperForm(null, {
+    title: discovered.title,
+    authors_venue: discovered.venue ? `${discovered.authors} — ${discovered.venue}` : discovered.authors,
+    year: discovered.year || new Date().getFullYear(),
+    contribution: discovered.abstract || "",
+    status: "open",
+  });
+}
+
+async function bookmarkDiscoveredPaper(discovered, btn) {
+  try {
+    await Api.addToReadingList({
+      title: discovered.title,
+      authors: discovered.authors,
+      venue: discovered.venue,
+      year: discovered.year,
+      doi: discovered.doi,
+      url: discovered.url,
+      abstract: discovered.abstract,
+      source: discovered.source,
+    });
+    toast("Bookmarked — see Reading List");
+    if (btn) { btn.textContent = "🔖 Bookmarked"; btn.disabled = true; }
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+async function showDiscoveredSummary(discovered) {
+  try {
+    const res = await Api.generatePaperSummary(discovered);
+    showToolResult("Paper Summary", res.content);
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Reading List — bookmarks from Discover Papers: tags, notes, read/unread
+ * ------------------------------------------------------------------- */
+function loadReadingList() {
+  const root = document.getElementById("section-readinglist");
+  root.innerHTML = `
+    <div class="toolbar">
+      <input type="text" id="rlTagFilter" class="search-input" placeholder="Filter by tag…" style="min-width:180px" />
+      <select id="rlStatusFilter" class="pill-select">
+        <option value="">All</option>
+        <option value="unread">Unread</option>
+        <option value="read">Read</option>
+      </select>
+    </div>
+    <div id="readingListItems"><div class="empty-state">Loading…</div></div>
+  `;
+  document.getElementById("rlTagFilter").addEventListener("input", debounce(fetchAndRenderReadingList, 300));
+  document.getElementById("rlStatusFilter").addEventListener("change", fetchAndRenderReadingList);
+  fetchAndRenderReadingList();
+}
+
+async function fetchAndRenderReadingList() {
+  const tag = document.getElementById("rlTagFilter").value.trim();
+  const status = document.getElementById("rlStatusFilter").value;
+  const params = new URLSearchParams();
+  if (tag) params.set("tag", tag);
+  if (status) params.set("status", status);
+
+  const el = document.getElementById("readingListItems");
+  try {
+    const res = await Api.getReadingList(params.toString() ? `?${params.toString()}` : "");
+    const items = res.data || [];
+    if (!items.length) {
+      el.innerHTML = `<div class="empty-state">Nothing bookmarked yet — find papers in Discover Papers and click 🔖 Bookmark.</div>`;
+      return;
+    }
+    el.innerHTML = items.map((it) => `
+      <div class="card" style="margin-bottom:12px">
+        <div style="display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:10px">
+          <div style="flex:1">
+            <div style="font-weight:700; font-size:14px; margin-bottom:4px">
+              ${it.status === "read" ? "✅ " : "🔵 "}${escapeHtml(it.title)}
+            </div>
+            <div style="font-size:12.5px; color:var(--muted)">
+              ${escapeHtml(it.authors || "")}${it.year ? " · " + it.year : ""}${it.venue ? " · " + escapeHtml(it.venue) : ""}
+              ${it.source ? " · via " + escapeHtml(it.source) : ""}
+            </div>
+          </div>
+          <div class="row-actions">
+            ${it.url ? `<a href="${escapeHtml(it.url)}" target="_blank" rel="noopener" title="Open paper">🔗</a>` : ""}
+            <button title="Remove" onclick="removeFromReadingList(${it.id})">🗑️</button>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Tags (comma-separated)</label>
+          <input type="text" value="${escapeHtml(it.tags || "")}" placeholder="e.g. gnn, cold-start, to-cite"
+            onchange="updateReadingListField(${it.id}, 'tags', this.value)">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Notes</label>
+          <textarea placeholder="Your notes on this paper…" onchange="updateReadingListField(${it.id}, 'notes', this.value)">${escapeHtml(it.notes || "")}</textarea>
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600; color:#4a4f6a">
+          <input type="checkbox" ${it.status === "read" ? "checked" : ""}
+            onchange="updateReadingListField(${it.id}, 'status', this.checked ? 'read' : 'unread')">
+          Mark as read
+        </label>
+      </div>`).join("");
+  } catch (err) {
+    el.innerHTML = `<div class="empty-state">${escapeHtml(err.message)}</div>`;
+  }
+}
+
+async function updateReadingListField(id, field, value) {
+  try {
+    await Api.updateReadingListItem(id, { [field]: value });
+    toast("Saved");
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+async function removeFromReadingList(id) {
+  if (!confirm("Remove this from your reading list?")) return;
+  try {
+    await Api.removeFromReadingList(id);
+    toast("Removed");
+    fetchAndRenderReadingList();
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Themes (full CRUD)
+ * ------------------------------------------------------------------- */
+async function loadThemes() {
+  const root = document.getElementById("section-themes");
+  root.innerHTML = `
+    <div class="toolbar"><div class="spacer"></div>
+      <button class="btn btn-primary" id="addThemeBtn">+ Add Theme</button>
+    </div>
+    <div class="theme-grid" id="themeGrid"><div class="empty-state">Loading…</div></div>
+  `;
+  document.getElementById("addThemeBtn").addEventListener("click", () => openThemeForm());
+  fetchAndRenderThemes();
+}
+
+async function fetchAndRenderThemes() {
+  const grid = document.getElementById("themeGrid");
+  try {
+    const res = await Api.getThemes();
+    state.themes = res.data;
+    if (!res.data.length) {
+      grid.innerHTML = `<div class="empty-state">No themes yet.</div>`;
+      return;
+    }
+    grid.innerHTML = res.data.map((t) => `
+      <div class="theme-card">
+        <div class="theme-top">
+          <div class="theme-icon-badge" style="background:${t.color}">${t.icon}</div>
+          <h4>${escapeHtml(t.name)}</h4>
+        </div>
+        <p>${escapeHtml(t.description)}</p>
+        <div class="theme-meta">
+          <span class="theme-count">${t.papers_count} papers</span>
+          <span class="row-actions">
+            <button title="Draft a literature-review paragraph for this theme" onclick="showThemeParagraph(${t.id}, '${escapeHtml(t.name).replace(/'/g, "&#39;")}')">✍️</button>
+            <button title="Edit" onclick='openThemeForm(${JSON.stringify(t).replace(/'/g, "&#39;")})'>✏️</button>
+            <button title="Delete" onclick="deleteTheme(${t.id}, '${escapeHtml(t.name).replace(/'/g, "&#39;")}')">🗑️</button>
+          </span>
+        </div>
+      </div>`).join("");
+  } catch (err) {
+    grid.innerHTML = `<div class="empty-state">${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function openThemeForm(theme = null) {
+  openModal(`
+    <h3>${theme ? "Edit Theme" : "Add Theme"}</h3>
+    <form id="themeForm">
+      <div class="form-group"><label>Theme #</label>
+        <input name="theme_no" type="number" min="1" required value="${theme?.theme_no || (state.themes.length + 1)}"></div>
+      <div class="form-group"><label>Name</label>
+        <input name="name" required value="${escapeHtml(theme?.name)}"></div>
+      <div class="form-group"><label>Description</label>
+        <textarea name="description" required>${escapeHtml(theme?.description)}</textarea></div>
+      <div class="form-group"><label>Color (hex)</label>
+        <input name="color" type="color" value="${theme?.color || "#4f6ef7"}"></div>
+      <div class="form-group"><label>Icon (emoji)</label>
+        <input name="icon" maxlength="4" value="${theme?.icon || "📄"}"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">${theme ? "Save Changes" : "Add Theme"}</button>
+      </div>
+    </form>
+  `);
+
+  document.getElementById("themeForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    try {
+      if (theme) {
+        await Api.updateTheme(theme.id, data);
+        toast("Theme updated");
+      } else {
+        await Api.createTheme(data);
+        toast("Theme added");
+      }
+      closeModal();
+      fetchAndRenderThemes();
+    } catch (err) {
+      toast(err.message, true);
+    }
+  });
+}
+
+async function deleteTheme(id, name) {
+  if (!confirm(`Delete theme "${name}"? Its papers will also be removed.`)) return;
+  try {
+    await Api.deleteTheme(id);
+    toast("Theme deleted");
+    fetchAndRenderThemes();
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Key Findings (full CRUD)
+ * ------------------------------------------------------------------- */
+async function loadFindings() {
+  const root = document.getElementById("section-findings");
+  root.innerHTML = `
+    <div class="finding-cols">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">✅ What Works Well</div>
+          <button class="link-btn" onclick="openFindingForm(null, 'works_well')">+ Add</button>
+        </div>
+        <ul class="finding-list" id="worksWellList"><li class="empty-state">Loading…</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚠️ What Remains Open</div>
+          <button class="link-btn" onclick="openFindingForm(null, 'open_challenge')">+ Add</button>
+        </div>
+        <ul class="finding-list" id="openChallengeList"><li class="empty-state">Loading…</li></ul>
+      </div>
+    </div>
+  `;
+  fetchAndRenderFindings();
+}
+
+async function fetchAndRenderFindings() {
+  try {
+    const res = await Api.getFindings();
+    const findings = res.data;
+    renderFindingList("worksWellList", findings.filter((f) => f.category === "works_well"), "✓", "#10b981");
+    renderFindingList("openChallengeList", findings.filter((f) => f.category === "open_challenge"), "!", "#ef4444");
+  } catch (err) {
+    document.getElementById("worksWellList").innerHTML = `<li class="empty-state">${escapeHtml(err.message)}</li>`;
+  }
+}
+
+function renderFindingList(elId, items, mark, color) {
+  const el = document.getElementById(elId);
+  if (!items.length) {
+    el.innerHTML = `<li class="empty-state">Nothing here yet.</li>`;
+    return;
+  }
+  el.innerHTML = items.map((f) => `
+    <li class="finding-item">
+      <span class="finding-mark" style="background:${color}">${mark}</span>
+      <span class="finding-text">${escapeHtml(f.description)}</span>
+      <span class="row-actions">
+        <button title="Edit" onclick='openFindingForm(${JSON.stringify(f).replace(/'/g, "&#39;")})'>✏️</button>
+        <button title="Delete" onclick="deleteFinding(${f.id})">🗑️</button>
+      </span>
+    </li>`).join("");
+}
+
+function openFindingForm(finding = null, defaultCategory = "works_well") {
+  const category = finding ? finding.category : defaultCategory;
+  openModal(`
+    <h3>${finding ? "Edit Finding" : "Add Finding"}</h3>
+    <form id="findingForm">
+      <div class="form-group"><label>Category</label>
+        <select name="category">
+          <option value="works_well" ${category === "works_well" ? "selected" : ""}>What Works Well</option>
+          <option value="open_challenge" ${category === "open_challenge" ? "selected" : ""}>What Remains Open</option>
+        </select></div>
+      <div class="form-group"><label>Description</label>
+        <textarea name="description" required>${escapeHtml(finding?.description)}</textarea></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">${finding ? "Save Changes" : "Add Finding"}</button>
+      </div>
+    </form>
+  `);
+
+  document.getElementById("findingForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    try {
+      if (finding) {
+        await Api.updateFinding(finding.id, data);
+        toast("Finding updated");
+      } else {
+        await Api.createFinding(data);
+        toast("Finding added");
+      }
+      closeModal();
+      fetchAndRenderFindings();
+    } catch (err) {
+      toast(err.message, true);
+    }
+  });
+}
+
+async function deleteFinding(id) {
+  if (!confirm("Delete this finding?")) return;
+  try {
+    await Api.deleteFinding(id);
+    toast("Finding deleted");
+    fetchAndRenderFindings();
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Research Gap (single editable record)
+ * ------------------------------------------------------------------- */
+async function loadGap() {
+  const root = document.getElementById("section-gap");
+  root.innerHTML = `<div class="card"><div class="empty-state">Loading…</div></div>`;
+  try {
+    const res = await Api.getResearchGap();
+    const gap = res.data;
+    root.innerHTML = `
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div class="card-title">Conclusion & Research Gap</div>
+          <button class="link-btn" id="editGapBtn">✏️ Edit</button>
+        </div>
+        <div class="gap-block"><h4>Summary</h4><p>${escapeHtml(gap.summary)}</p></div>
+        <div class="gap-block"><h4>The Research Gap</h4><p>${escapeHtml(gap.gap_statement)}</p></div>
+        <div class="gap-block"><h4>Direction for Future Work</h4><p>${escapeHtml(gap.closing_statement)}</p></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🔮 Auto-Generate from Saved Papers</div>
+            <div class="card-subtitle">Recomputed live from whatever papers are currently in Research Papers — add or remove papers and generate again to see it change</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="autoGenGapBtn">Generate Now</button>
+      </div>
+    `;
+    document.getElementById("editGapBtn").addEventListener("click", () => openGapForm(gap));
+    document.getElementById("autoGenGapBtn").addEventListener("click", generateResearchGapDraft);
+  } catch (err) {
+    root.innerHTML = `<div class="card"><div class="empty-state">${escapeHtml(err.message)}</div></div>`;
+  }
+}
+
+async function generateResearchGapDraft() {
+  try {
+    const res = await Api.generateResearchGapDraft();
+    showToolResult("Auto-Generated Research Gap", res.content);
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+function openGapForm(gap) {
+  openModal(`
+    <h3>Edit Research Gap</h3>
+    <form id="gapForm">
+      <div class="form-group"><label>Summary</label>
+        <textarea name="summary" required style="min-height:90px">${escapeHtml(gap.summary)}</textarea></div>
+      <div class="form-group"><label>Gap Statement</label>
+        <textarea name="gap_statement" required style="min-height:90px">${escapeHtml(gap.gap_statement)}</textarea></div>
+      <div class="form-group"><label>Closing Statement</label>
+        <textarea name="closing_statement" required style="min-height:70px">${escapeHtml(gap.closing_statement)}</textarea></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  `);
+
+  document.getElementById("gapForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    try {
+      await Api.updateResearchGap(data);
+      toast("Research gap updated");
+      closeModal();
+      loadGap();
+    } catch (err) {
+      toast(err.message, true);
+    }
+  });
+}
+
+/* ---------------------------------------------------------------------
+ * Future Work (full CRUD)
+ * ------------------------------------------------------------------- */
+async function loadFutureWork() {
+  const root = document.getElementById("section-future");
+  root.innerHTML = `
+    <div class="toolbar"><div class="spacer"></div>
+      <button class="btn btn-primary" id="addFutureBtn">+ Add Recommendation</button>
+    </div>
+    <div class="card"><ul class="finding-list" id="futureList"><li class="empty-state">Loading…</li></ul></div>
+  `;
+  document.getElementById("addFutureBtn").addEventListener("click", () => openFutureForm());
+  fetchAndRenderFutureWork();
+}
+
+async function fetchAndRenderFutureWork() {
+  const el = document.getElementById("futureList");
+  try {
+    const res = await Api.getFutureWork();
+    if (!res.data.length) {
+      el.innerHTML = `<li class="empty-state">No recommendations yet.</li>`;
+      return;
+    }
+    el.innerHTML = res.data.map((f, i) => `
+      <li class="finding-item">
+        <span class="finding-mark" style="background:#4f6ef7">${i + 1}</span>
+        <span class="finding-text"><strong>${escapeHtml(f.title)}</strong><br>${escapeHtml(f.description)}</span>
+        <span class="row-actions">
+          <button title="Edit" onclick='openFutureForm(${JSON.stringify(f).replace(/'/g, "&#39;")})'>✏️</button>
+          <button title="Delete" onclick="deleteFutureWork(${f.id})">🗑️</button>
+        </span>
+      </li>`).join("");
+  } catch (err) {
+    el.innerHTML = `<li class="empty-state">${escapeHtml(err.message)}</li>`;
+  }
+}
+
+function openFutureForm(item = null) {
+  openModal(`
+    <h3>${item ? "Edit Recommendation" : "Add Recommendation"}</h3>
+    <form id="futureForm">
+      <div class="form-group"><label>Title</label>
+        <input name="title" required value="${escapeHtml(item?.title)}"></div>
+      <div class="form-group"><label>Description</label>
+        <textarea name="description" required>${escapeHtml(item?.description)}</textarea></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">${item ? "Save Changes" : "Add"}</button>
+      </div>
+    </form>
+  `);
+
+  document.getElementById("futureForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    try {
+      if (item) {
+        await Api.updateFutureWork(item.id, data);
+        toast("Recommendation updated");
+      } else {
+        await Api.createFutureWork(data);
+        toast("Recommendation added");
+      }
+      closeModal();
+      fetchAndRenderFutureWork();
+    } catch (err) {
+      toast(err.message, true);
+    }
+  });
+}
+
+async function deleteFutureWork(id) {
+  if (!confirm("Delete this recommendation?")) return;
+  try {
+    await Api.deleteFutureWork(id);
+    toast("Recommendation deleted");
+    fetchAndRenderFutureWork();
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Reports (printable summary)
+ * ------------------------------------------------------------------- */
+async function loadReport() {
+  const root = document.getElementById("section-reports");
+  root.innerHTML = `<div class="card"><div class="empty-state">Building report…</div></div>`;
+  try {
+    const [summary, findings, future] = await Promise.all([
+      state.summary ? Promise.resolve(state.summary) : Api.getSummary(),
+      Api.getFindings(),
+      Api.getFutureWork(),
+    ]);
+    const works = findings.data.filter((f) => f.category === "works_well");
+    const opens = findings.data.filter((f) => f.category === "open_challenge");
+
+    root.innerHTML = `
+      <div class="toolbar"><div class="spacer"></div>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Export PDF</button>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0">${escapeHtml(summary.meta.title)}</h2>
+        <p style="color:var(--muted)">${escapeHtml(summary.meta.subtitle)} — ${escapeHtml(summary.meta.author_name)},
+          ${escapeHtml(summary.meta.author_class)}, Roll No. ${escapeHtml(summary.meta.roll_no)}</p>
+
+        <div class="gap-block"><h4>At a Glance</h4>
+          <p>${summary.stats.total_papers} papers reviewed across ${summary.stats.total_themes} themes,
+             spanning ${summary.stats.publication_span}.</p></div>
+
+        <div class="gap-block"><h4>What Works Well</h4>
+          <p>${works.map((w) => escapeHtml(w.description)).join(" · ")}</p></div>
+
+        <div class="gap-block"><h4>What Remains Open</h4>
+          <p>${opens.map((o) => escapeHtml(o.description)).join(" · ")}</p></div>
+
+        <div class="gap-block"><h4>Recommended Future Work</h4>
+          <p>${future.data.map((f) => escapeHtml(f.title)).join(" · ")}</p></div>
+
+        <div class="gap-block"><h4>Conclusion</h4>
+          <p>${escapeHtml(summary.research_gap ? summary.research_gap.closing_statement : "")}</p></div>
+      </div>
+    `;
+  } catch (err) {
+    root.innerHTML = `<div class="card"><div class="empty-state">${escapeHtml(err.message)}</div></div>`;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Settings (report meta)
+ * ------------------------------------------------------------------- */
+async function loadSettings() {
+  const root = document.getElementById("section-settings");
+  root.innerHTML = `<div class="card"><div class="empty-state">Loading…</div></div>`;
+  try {
+    const res = await Api.getReportMeta();
+    const m = res.data;
+    root.innerHTML = `
+      <div class="card" style="max-width:520px">
+        <div class="card-title" style="margin-bottom:16px">Report Details</div>
+        <form id="settingsForm">
+          <div class="form-group"><label>Report Title</label><input name="title" required value="${escapeHtml(m.title)}"></div>
+          <div class="form-group"><label>Subtitle</label><input name="subtitle" required value="${escapeHtml(m.subtitle)}"></div>
+          <div class="form-group"><label>Author Name</label><input name="author_name" required value="${escapeHtml(m.author_name)}"></div>
+          <div class="form-group"><label>Class</label><input name="author_class" required value="${escapeHtml(m.author_class)}"></div>
+          <div class="form-group"><label>Roll No.</label><input name="roll_no" required value="${escapeHtml(m.roll_no)}"></div>
+          <div class="form-group"><label>Subject</label><input name="subject" required value="${escapeHtml(m.subject)}"></div>
+          <div class="form-group"><label>Review Period</label><input name="review_period" required value="${escapeHtml(m.review_period)}"></div>
+          <div class="modal-actions" style="justify-content:flex-start">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    `;
+    document.getElementById("settingsForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      try {
+        await Api.updateReportMeta(data);
+        toast("Settings saved");
+      } catch (err) {
+        toast(err.message, true);
+      }
+    });
+  } catch (err) {
+    root.innerHTML = `<div class="card"><div class="empty-state">${escapeHtml(err.message)}</div></div>`;
+  }
+}
+
+</script>
+</body>
+</html>
